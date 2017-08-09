@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Views;
 using Android.Widget;
-using System.Linq;
+using CustomAdapter.Adapters;
+using CustomAdapter.Models;
 
 namespace CustomAdapter
 {
-    [Activity(Label = "CustomAdapter", MainLauncher = true)]
+    [Activity(Label = "CustomAdapter", MainLauncher = true, Theme = "@android:style/Theme.Material.Light")]
     public class MainActivity : Activity
     {
-        //https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-
-        private List<User> _items = new List<User>();
-        private UsersAdapter _adapter;
+        private List<User> _items;
         private ListView _listView;
-        private int number = 100;
+        private UsersAdapter _adapter;
+        private int _number = 40;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,11 +22,18 @@ namespace CustomAdapter
 
             _items = GenerateData();
             _adapter = new UsersAdapter(this, Resource.Layout.MainRow, _items);
-            //_adapter.Update += (object sender, int e) =>
-            //{
-            //    Console.WriteLine("Position: " + e);
-            //    _adapter.NotifyDataSetChanged();
-            //};
+            _adapter.UpdateUser += (sender, e) =>
+            {
+                _items[e].Name = "Renamed";
+                _adapter.NotifyDataSetChanged();
+                Toast.MakeText(this, $"Update button clicked - [Position: {e}]", ToastLength.Short).Show();
+            };
+            _adapter.RemoveUser += (sender, e) =>
+            {
+                _items.RemoveAt(e);
+                UpdateData();
+                Toast.MakeText(this, $"Remove button clicked - [Position: {e}]", ToastLength.Short).Show();
+            };
 
             _listView = FindViewById<ListView>(Resource.Id.lvItems);
             _listView.Adapter = _adapter;
@@ -39,103 +42,28 @@ namespace CustomAdapter
             addButton.Click += (sender, e) =>
             {
                 var text = FindViewById<EditText>(Resource.Id.itemEditText).Text;
-                if (!string.IsNullOrEmpty(text))
-                {
-                    _adapter.Add(new User(number, $"{text} - {number}"));
-                    _adapter.NotifyDataSetChanged();
-                    number++;
-                }
+                if (string.IsNullOrEmpty(text)) return;
+                _items.Add(new User(_number, $"{text} - {_number*99}"));
+                UpdateData();
+                _number++;
             };
+        }
+
+        private void UpdateData()
+        {
+            _adapter.Clear();
+            _adapter.AddAll(_items);
+            _adapter.NotifyDataSetChanged();
         }
 
         private List<User> GenerateData()
         {
             var retVal = new List<User>();
-            for (int i = 0; i < number; i++)
+            for (var i = 1; i <= _number; i++)
             {
-                retVal.Add(new User(i, $"MookieFumi - {i}"));
+                retVal.Add(new User(i, $"MookieFumi - {i*99}"));
             }
             return retVal;
-        }
-    }
-
-    public class UsersAdapter : ArrayAdapter<User>
-    {
-        private readonly Context _context;
-        private readonly int _textViewResourceId;
-        private readonly List<User> _items;
-        //public event EventHandler<int> Update;
-
-        public UsersAdapter(Context context, int textViewResourceId, List<User> items) : base(context, textViewResourceId, items)
-        {
-            _items = items;
-            _textViewResourceId = textViewResourceId;
-            _context = context;
-        }
-
-        public override View GetView(int position, View convertView, ViewGroup parent)
-        {
-            UserViewHolder viewHolder;
-            User user = GetItem(position);
-
-            if (convertView == null)
-            {
-                convertView = LayoutInflater.From(_context).Inflate(_textViewResourceId, null);
-                viewHolder = new UserViewHolder(convertView, user.Id);
-                convertView.SetTag(Resource.Id.TAG_ID, viewHolder);
-
-                viewHolder.UpdateButton.SetTag(Resource.Id.TAG_ID, viewHolder.Id);
-                viewHolder.UpdateButton.Click += (object sender, EventArgs e) =>
-                {
-                    var id = (int)((View)sender).GetTag(Resource.Id.TAG_ID);
-                    var item = _items.Single(p => p.Id == id);
-                    item.Name = String.Empty;
-                    this.NotifyDataSetChanged();
-                    //Update?.Invoke(this, (int)((View)sender).GetTag(Resource.Id.TAG_ID));
-                };
-
-                viewHolder.RemoveButton.Click += (sender, e) =>
-                {
-                    Toast.MakeText(_context, "Remove button clicked", ToastLength.Short).Show();
-                };
-            }
-            else
-            {
-                viewHolder = (UserViewHolder)convertView.GetTag(Resource.Id.TAG_ID);
-            }
-
-
-            viewHolder.NameTextView.Text = user.Name;
-
-            return convertView;
-        }
-    }
-
-    public class UserViewHolder : Java.Lang.Object
-    {
-        public int Id { get; set; }
-        public TextView NameTextView { get; set; }
-        public Button RemoveButton { get; set; }
-        public Button UpdateButton { get; set; }
-
-        public UserViewHolder(View view, int id)
-        {
-            Id = id;
-            NameTextView = view.FindViewById<TextView>(Resource.Id.tvName);
-            RemoveButton = view.FindViewById<Button>(Resource.Id.removeButton);
-            UpdateButton = view.FindViewById<Button>(Resource.Id.updateButton);
-        }
-    }
-
-    public class User
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public User(int id, string name)
-        {
-            Id = id;
-            Name = name;
         }
     }
 }
