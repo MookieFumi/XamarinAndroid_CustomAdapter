@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Android.Content;
+using Android.OS;
 using Android.Views;
+using Android.Views.Animations;
 using Android.Widget;
 using CustomAdapter.Models;
 using CustomAdapter.ViewHolders;
@@ -43,7 +45,13 @@ namespace CustomAdapter.Adapters
                 viewHolder.RemoveButton.Click += (sender, e) =>
                 {
                     var pos = (int)((View)sender).GetTag(Resource.Id.TAG_ID);
-                    RemoveUser?.Invoke(this, pos);
+                    Animation animation = AnimationUtils.LoadAnimation(_context, Resource.Animation.fadeout);
+                    convertView.StartAnimation(animation);
+                    Handler handler = new Handler();
+                    handler.PostDelayed(() =>
+                    {
+                        RemoveUser?.Invoke(this, pos);
+                    }, 1000);
                 };
             }
             else

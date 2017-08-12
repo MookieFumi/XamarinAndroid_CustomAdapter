@@ -5,7 +5,7 @@ using Android.Widget;
 using CustomAdapter.Adapters;
 using CustomAdapter.Models;
 
-namespace CustomAdapter
+namespace CustomAdapter.Activities
 {
     [Activity(Label = "CustomAdapter", MainLauncher = true, Theme = "@android:style/Theme.Material.Light")]
     public class MainActivity : Activity
@@ -43,7 +43,8 @@ namespace CustomAdapter
             {
                 var text = FindViewById<EditText>(Resource.Id.itemEditText).Text;
                 if (string.IsNullOrEmpty(text)) return;
-                _items.Add(new User(_number, $"{text} - {_number*99}"));
+
+                _items.Add(new User(_number, $"{text} - {_number * 99}"));
                 UpdateData();
                 _number++;
             };
@@ -61,7 +62,7 @@ namespace CustomAdapter
             var retVal = new List<User>();
             for (var i = 1; i <= _number; i++)
             {
-                retVal.Add(new User(i, $"MookieFumi - {i*99}"));
+                retVal.Add(new User(i, $"MookieFumi - {i * 99}"));
             }
             return retVal;
         }
