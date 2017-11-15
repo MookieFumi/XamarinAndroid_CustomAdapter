@@ -9,6 +9,7 @@ namespace CustomAdapter.ViewHolders
         public TextView NameTextView { get; set; }
         public Button RemoveButton { get; set; }
         public Button UpdateButton { get; set; }
+        public int Position { get; set; }
 
         public UserViewHolder(View view, int id)
         {
