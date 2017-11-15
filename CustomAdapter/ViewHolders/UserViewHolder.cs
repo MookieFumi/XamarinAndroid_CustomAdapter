@@ -3,18 +3,23 @@ using Android.Widget;
 
 namespace CustomAdapter.ViewHolders
 {
-    public class UserViewHolder : Java.Lang.Object
+    public interface IPosition
     {
-        public int Id { get; set; }
+        int Position { get; set; }
+
+    }
+    public class UserViewHolder : Java.Lang.Object, IPosition
+    {
         public TextView NameTextView { get; set; }
+        public EditText SurnameEditText { get; set; }
         public Button RemoveButton { get; set; }
         public Button UpdateButton { get; set; }
         public int Position { get; set; }
 
-        public UserViewHolder(View view, int id)
+        public UserViewHolder(View view)
         {
-            Id = id;
             NameTextView = view.FindViewById<TextView>(Resource.Id.tvName);
+            SurnameEditText = view.FindViewById<EditText>(Resource.Id.etSurname);
             RemoveButton = view.FindViewById<Button>(Resource.Id.removeButton);
             UpdateButton = view.FindViewById<Button>(Resource.Id.updateButton);
         }

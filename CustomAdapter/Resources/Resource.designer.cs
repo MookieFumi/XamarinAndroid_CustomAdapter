@@ -103,6 +103,9 @@ namespace CustomAdapter
 			// aapt resource value: 0x7f050003
 			public const int addButton = 2131034115;
 			
+			// aapt resource value: 0x7f050007
+			public const int etSurname = 2131034119;
+			
 			// aapt resource value: 0x7f050002
 			public const int itemEditText = 2131034114;
 			
@@ -112,8 +115,8 @@ namespace CustomAdapter
 			// aapt resource value: 0x7f050005
 			public const int lvItems = 2131034117;
 			
-			// aapt resource value: 0x7f050008
-			public const int removeButton = 2131034120;
+			// aapt resource value: 0x7f050009
+			public const int removeButton = 2131034121;
 			
 			// aapt resource value: 0x7f050004
 			public const int retrieveButton = 2131034116;
@@ -121,8 +124,8 @@ namespace CustomAdapter
 			// aapt resource value: 0x7f050006
 			public const int tvName = 2131034118;
 			
-			// aapt resource value: 0x7f050007
-			public const int updateButton = 2131034119;
+			// aapt resource value: 0x7f050008
+			public const int updateButton = 2131034120;
 			
 			static Id()
 			{

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Android.App;
 using Android.OS;
 using Android.Widget;
@@ -11,18 +12,22 @@ namespace CustomAdapter.Activities
     public class MainActivity : Activity
     {
         private ListView _listView;
-        private UsersAdapter _adapter;
-        private int _number = 4;
-        private List<User> _items;
+        private UserAdapter _adapter;
+        private int _number = 15;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Main);
 
-            _items = GetItems();
+            var items = GetItems();
 
-            _adapter = new UsersAdapter(this, Resource.Layout.MainRow, _items);
+            _adapter = new UserAdapter(this, Resource.Layout.MainRow, items);
+
+            _adapter.NameChanged += (sender, args) =>
+            {
+                Toast.MakeText(this, $"New name {args.NewName}", ToastLength.Short).Show();
+            };
 
             _listView = FindViewById<ListView>(Resource.Id.lvItems);
 
@@ -34,7 +39,7 @@ namespace CustomAdapter.Activities
                 var text = FindViewById<EditText>(Resource.Id.itemEditText).Text;
                 if (string.IsNullOrEmpty(text)) return;
 
-                _adapter.AddUser(new User(_number, text));
+                _adapter.AddItem(new User(_number, text));
 
                 _number++;
             };
@@ -42,7 +47,7 @@ namespace CustomAdapter.Activities
             var retrieveButton = FindViewById<Button>(Resource.Id.retrieveButton);
             retrieveButton.Click += (sender, e) =>
             {
-                Toast.MakeText(this, $"Items from Activity {_items.Count}", ToastLength.Short).Show();
+                Toast.MakeText(this, $"Items from Activity {_adapter.GetItems().Count()}", ToastLength.Short).Show();
             };
         }
 
